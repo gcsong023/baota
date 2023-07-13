@@ -1,4 +1,4 @@
-FROM centos:7
+FROM ubuntu:22.04
 MAINTAINER pch18.cn
 
 #设置entrypoint和letsencrypt映射到www文件夹下持久化
@@ -12,17 +12,19 @@ RUN mkdir -p /www/letsencrypt \
     && ln -s /www/init.d /etc/init.d \
     && chmod +x /entrypoint.sh \
     && mkdir /www/wwwroot
-    
+ENV TZ=Asia/Chongqing
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone \
+    && apt -y install tzdata
 #更新系统 安装依赖 安装宝塔面板
 RUN cd /home \
-    && yum -y update \
-    && yum -y install wget openssh-server \
+    && apt -y update \
+    && apt -y install wget openssh-server \
     && echo 'Port 63322' > /etc/ssh/sshd_config \
     && wget -O install.sh http://download.bt.cn/install/install_6.0.sh \
     && echo y | bash install.sh \
     && python /set_default.py \
     && echo '["linuxsys", "webssh"]' > /www/server/panel/config/index.json \
-    && yum clean all
+    && apt clean all
 
 WORKDIR /www/wwwroot
 CMD /entrypoint.sh
