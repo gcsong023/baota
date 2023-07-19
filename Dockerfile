@@ -6,19 +6,20 @@ COPY entrypoint.sh /entrypoint.sh
 
 RUN mkdir -p /www/letsencrypt \
     && ln -s /www/letsencrypt /etc/letsencrypt \
-    && rm -f /etc/init.d \
+    && rm -rf /etc/init.d \
     && mkdir /www/init.d \
     && ln -s /www/init.d /etc/init.d \
     && chmod +x /entrypoint.sh \
     && mkdir /www/wwwroot
+    
 #设置时区
 ENV TZ=Asia/Chongqing
-RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone \
-    && apt -y install tzdata
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone 
+
 #更新系统 安装依赖 安装宝塔面板
 RUN cd /home \
     && apt -y update \
-    && apt -y install wget openssh-server iproute2 \
+    && apt -y install wget openssh-server iproute2  tzdata \
     && echo 'Port 63322' > /etc/ssh/sshd_config \
     && wget -O install.sh http://download.bt.cn/install/install_6.0.sh \
     && echo y | bash install.sh \
