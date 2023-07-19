@@ -3,7 +3,6 @@ MAINTAINER pch18.cn
 
 #设置entrypoint和letsencrypt映射到www文件夹下持久化
 COPY entrypoint.sh /entrypoint.sh
-COPY set_default.py /set_default.py
 
 RUN mkdir -p /www/letsencrypt \
     && ln -s /www/letsencrypt /etc/letsencrypt \
@@ -22,7 +21,8 @@ RUN cd /home \
     && echo 'Port 63322' > /etc/ssh/sshd_config \
     && wget -O install.sh http://download.bt.cn/install/install_6.0.sh \
     && echo y | bash install.sh \
-    && python /set_default.py \
+    && apt -y install iproute2 \
+    && echo 8888 | bt 8 \
     && echo '["linuxsys", "webssh"]' > /www/server/panel/config/index.json \
     && apt clean all
 
