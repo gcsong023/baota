@@ -24,6 +24,7 @@ RUN cd /home \
     && wget -O install.sh http://download.bt.cn/install/install_6.0.sh \
     && echo y | bash install.sh \
     && echo 8888 | bt 8 \
+    && echo /mybaota | bt 28 \
     && echo '["linuxsys", "webssh"]' > /www/server/panel/config/index.json \
     && apt clean all
 
@@ -31,4 +32,4 @@ WORKDIR /www/wwwroot
 CMD /entrypoint.sh
 EXPOSE 8888 888 21 20 443 80
 
-HEALTHCHECK --interval=5s --timeout=3s CMD curl -fs http://localhost:8888/ && curl -fs http://localhost/ || exit 1 
+HEALTHCHECK --interval=5s --timeout=3s CMD curl -sS http://localhost:8888/mybaota && curl -sS http://localhost/ || exit 1 
